@@ -1,0 +1,107 @@
+<!-- Single-file HTML with embedded CSS and JS for Flask app -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗣 Speech Classifier</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: #5a89a9;
+            padding: 30px 40px 40px 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(46, 91, 255, 0.15);
+        }
+        h1 {
+            text-align: center;
+            color: #4e4376;
+            letter-spacing: 1px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1.5px solid #4e4376;
+            resize: vertical;
+            font-size: 16px;
+            background: #e3e6f3;
+            color: #22223b;
+            transition: border 0.2s;
+        }
+        textarea:focus {
+            border: 1.5px solid #2b5876;
+            outline: none;
+        }
+        button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
+        }
+        .result {
+            margin-top: 24px;
+            padding: 18px;
+            background: #dbeafe;
+            border-radius: 6px;
+            min-height: 28px;
+            text-align: center;
+            font-weight: bold;
+            color: #1e293b;
+            border: 1px solid #4e4376;
+            box-shadow: 0 2px 8px rgba(46, 91, 255, 0.07);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗣 Speech Classifier</h1>
+        <form id="prediction-form">
+            <textarea name="text" id="text-input" rows="4" placeholder="Enter your text here..." required></textarea>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = document.getElementById('text-input').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = "Predicting...";
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'text=' + encodeURIComponent(text)
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.textContent = "Prediction: " + data.prediction;
+            })
+            .catch(error => {
+                resultDiv.textContent = "Error: " + error;
+            });
+        });
+    </script>
+</body>
